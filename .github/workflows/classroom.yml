@@ -1,0 +1,64 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Inputing "Important dates include 05/07/2025 and 31-12-2024 for events."
+      id: inputing-important-dates-include-05-07-2025-and-31-12-2024-for-events
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Inputing "Important dates include 05/07/2025 and 31-12-2024 for
+          events."
+        setup-command: ''
+        command: python3 regex_extract_dates/main.py
+        input: Important dates include 05/07/2025 and 31-12-2024 for events.
+        expected-output: |-
+          05/07/2025
+          31-12-2024
+        comparison-method: exact
+        timeout: 10
+        max-score: 1
+    - name: Inputting "We visited on 01/01/2023. Next visit is 15-06-2024."
+      id: inputting-we-visited-on-01-01-2023-next-visit-is-15-06-2024
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Inputting "We visited on 01/01/2023. Next visit is 15-06-2024."
+        setup-command: ''
+        command: python3 regex_extract_dates/main.py
+        input: We visited on 01/01/2023. Next visit is 15-06-2024.
+        expected-output: |-
+          01/01/2023
+          15-06-2024
+        comparison-method: exact
+        timeout: 10
+        max-score: 1
+    - name: 'Inputting "Dates: 5/7/2025, 12-11-23, and 30/09/2025."'
+      id: inputting-dates-5-7-2025-12-11-23-and-30-09-2025
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Inputting "Dates: 5/7/2025, 12-11-23, and 30/09/2025."'
+        setup-command: ''
+        command: python3 regex_extract_dates/main.py
+        input: 'Dates: 5/7/2025, 12-11-23, and 30/09/2025.'
+        expected-output: 30/09/2025
+        comparison-method: exact
+        timeout: 10
+        max-score: 3
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        INPUTING-IMPORTANT-DATES-INCLUDE-05-07-2025-AND-31-12-2024-FOR-EVENTS_RESULTS: "${{steps.inputing-important-dates-include-05-07-2025-and-31-12-2024-for-events.outputs.result}}"
+        INPUTTING-WE-VISITED-ON-01-01-2023-NEXT-VISIT-IS-15-06-2024_RESULTS: "${{steps.inputting-we-visited-on-01-01-2023-next-visit-is-15-06-2024.outputs.result}}"
+        INPUTTING-DATES-5-7-2025-12-11-23-AND-30-09-2025_RESULTS: "${{steps.inputting-dates-5-7-2025-12-11-23-and-30-09-2025.outputs.result}}"
+      with:
+        runners: inputing-important-dates-include-05-07-2025-and-31-12-2024-for-events,inputting-we-visited-on-01-01-2023-next-visit-is-15-06-2024,inputting-dates-5-7-2025-12-11-23-and-30-09-2025
